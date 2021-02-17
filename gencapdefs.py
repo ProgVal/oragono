@@ -238,9 +238,10 @@ const (
     print("})", file=output)
 
     # run the generated code through `gofmt -s`, which will print it to stdout
-    gofmt = subprocess.Popen(['gofmt', '-s'], stdin=subprocess.PIPE)
-    gofmt.communicate(input=output.getvalue().encode('utf-8'))
-    if gofmt.poll() != 0:
+    gofmt = os.environ.get('GOFMT', 'gofmt')
+    gofmt_proc = subprocess.Popen([gofmt, '-s'], stdin=subprocess.PIPE)
+    gofmt_proc.communicate(input=output.getvalue().encode('utf-8'))
+    if gofmt_proc.poll() != 0:
         print(output.getvalue())
         raise Exception("gofmt failed")
     return 0
